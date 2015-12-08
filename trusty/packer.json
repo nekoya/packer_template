@@ -1,0 +1,58 @@
+{
+    "builders":[{
+        "type": "virtualbox-iso",
+        "vm_name": "dev-trusty",
+        "guest_os_type": "Ubuntu_64",
+        "iso_url": "http://ftp.riken.jp/Linux/ubuntu-releases/14.04/ubuntu-14.04.3-server-amd64.iso",
+        "iso_checksum": "9e5fecc94b3925bededed0fdca1bd417",
+        "iso_checksum_type": "md5",
+        "ssh_username": "vagrant",
+        "ssh_password": "vagrant",
+        "ssh_wait_timeout": "240m",
+        "http_directory": "http",
+        "boot_wait": "8s",
+        "disk_size": 20000,
+        "boot_command":[
+            "<esc><esc><enter><wait>",
+            "/install/vmlinuz noapic ",
+            "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+            "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+            "hostname={{ .Name }} ",
+            "fb=false debconf/frontend=noninteractive ",
+            "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+            "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+            "initrd=/install/initrd.gz -- <enter>"
+        ],
+        "shutdown_command": "echo 'vagrant' | sudo -S shutdown -h now",
+        "vboxmanage": [
+            ["modifyvm", "{{.Name}}", "--memory", "2048"],
+            ["modifyvm", "{{.Name}}", "--cpus", "1"]
+        ]
+    }],
+    "provisioners": [{
+        "type": "shell",
+        "execute_command": "echo 'vagrant' | sudo -S sh '{{ .Path }}'",
+        "scripts": [
+            "shell/first.sh",
+            "shell/apt_dotdeb.sh",
+            "shell/packages.sh",
+            "shell/docker.sh",
+            "shell/timezone.sh",
+            "shell/sysctl.sh",
+            "shell/ntp.sh",
+            "shell/purge_nano.sh",
+            "shell/mysql.sh",
+            "shell/nginx.sh",
+            "shell/setup_user.sh",
+            "shell/python35.sh",
+            "shell/cleanup_virtualbox.sh"
+        ]
+    }],
+    "post-processors": [
+        {
+            "type": "vagrant",
+            "output": "../boxes/trusty.box",
+            "vagrantfile_template": "Vagrantfile"
+        }
+    ]
+}
