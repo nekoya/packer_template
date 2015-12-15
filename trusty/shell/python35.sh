@@ -3,4 +3,4 @@ tar zxf Python-3.5.0.tgz
 cd Python-3.5.0
 ./configure --disable-ipv6 --prefix=/opt/Python-3.5.0
 make
-make install
+sudo make install

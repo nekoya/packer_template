@@ -44,9 +44,18 @@
             "shell/mysql.sh",
             "shell/nginx.sh",
             "shell/setup_user.sh",
-            "shell/python35.sh",
             "shell/cleanup_virtualbox.sh"
         ]
+    }, {
+        "type": "shell",
+        "scripts": [
+            "shell/python35.sh",
+            "shell/rbenv.sh"
+        ]
+    }, {
+        "type": "shell",
+        "execute_command": "echo 'vagrant' | sudo -S sh '{{ .Path }}'",
+        "scripts": ["shell/cleanup_virtualbox.sh"]
     }],
     "post-processors": [
         {
